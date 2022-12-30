@@ -65,6 +65,28 @@ input[type='range'] {
 	font-weight: bold;
 }
 
+.alert {
+	background: #fff;
+	padding: 10px;
+	border-radius: 5px;
+	position: absolute;
+	width: 320px;
+	top: 15px;
+	right: 20px;
+	transform: translateY(calc(-100% - 20px));
+	transition: all 0.5s cubic-bezier(0.215, 0.61, 0.355, 1);
+	text-align: center;
+}
+
+.alert.active {
+	transform: translateY(0);
+}
+
+.text {
+	font-size: 1rem;
+	color: #000;
+}
+
 @media screen and (max-width: 570px) {
 	h1 {
 		font-size: 1.25rem;

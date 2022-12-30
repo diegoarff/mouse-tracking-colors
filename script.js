@@ -8,6 +8,7 @@ const positionBtn = document.getElementById('positionBtn');
 const slider = document.getElementById('transparencySlider');
 const clearBtn = document.getElementById('clearBtn');
 const downloadBtn = document.getElementById('downloadBtn');
+const custom_alert = document.querySelector('.alert');
 
 //PAGE
 
@@ -65,6 +66,7 @@ canvas.addEventListener('click', (e) => {
 	if (changingPosition) {
 		originPosition = getMousePos(e);
 		changingPosition = false;
+		custom_alert.classList.remove('active');
 	}
 });
 
@@ -120,6 +122,7 @@ window.addEventListener('resize', () => {
 
 positionBtn.addEventListener('click', () => {
 	changingPosition = true;
+	custom_alert.classList.add('active');
 });
 
 clearBtn.addEventListener('click', () => {
