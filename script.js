@@ -1,13 +1,44 @@
 const canvas = document.getElementById('myCanvas');
 const ctx = canvas.getContext('2d');
 
+const radioBtns = document.querySelectorAll('input[type="radio"]');
+const colorPicker = document.getElementById('colorPicker');
+const colorRadio = document.getElementById('color');
+const positionBtn = document.getElementById('positionBtn');
+const slider = document.getElementById('transparencySlider');
+const clearBtn = document.getElementById('clearBtn');
+const downloadBtn = document.getElementById('downloadBtn');
+
+//PAGE
+
+radioBtns.forEach((radio) => {
+	radio.addEventListener('change', (e) => {
+		if (e.target.id === 'color') {
+			colorPicker.classList.remove('inactive');
+		} else {
+			colorPicker.classList.add('inactive');
+		}
+	});
+});
+
+//CANVAS
+
 canvas.width = window.innerWidth * 0.8;
-canvas.height = window.innerHeight * 0.8;
+canvas.height = window.innerHeight * 0.7;
 
 let isDrawing = false;
+
 let rect = canvas.getBoundingClientRect();
 
+let changingPosition = false;
+let originPosition = {
+	x: canvas.width / 2,
+	y: canvas.height / 2,
+};
+
 canvas.addEventListener('mousedown', (e) => {
+	if (changingPosition) return;
+
 	isDrawing = true;
 });
 
@@ -17,17 +48,41 @@ canvas.addEventListener('mouseup', (e) => {
 
 canvas.addEventListener('mousemove', (e) => {
 	if (!isDrawing) return;
-	drawLines(e);
+
+	if (colorRadio.checked) {
+		ctx.strokeStyle = hexToRGBA(colorPicker.value);
+	} else {
+		ctx.strokeStyle = getRandomHSLA();
+	}
+
+	let { x: mouseX, y: mouseY } = getMousePos(e);
+	let { x: originX, y: originY } = originPosition;
+
+	drawLine(mouseX, mouseY, originX, originY);
 });
 
-const drawLines = (e) => {
-	let { x, y } = getMousePos(e);
+canvas.addEventListener('click', (e) => {
+	if (changingPosition) {
+		originPosition = getMousePos(e);
+		changingPosition = false;
+	}
+});
+
+const drawLine = (mouseX, mouseY, originX, originY) => {
 	ctx.beginPath();
-	ctx.strokeStyle = getRandomHSLA();
-	ctx.moveTo(canvas.width / 2, canvas.height / 2);
-	ctx.lineTo(x, y);
+	ctx.moveTo(originX, originY);
+	ctx.lineTo(mouseX, mouseY);
 	ctx.stroke();
 	ctx.closePath();
+};
+
+/*Generate RGB color given hexadecimal form*/
+const hexToRGBA = (hex) => {
+	let r = parseInt(hex.substring(1, 3), 16);
+	let g = parseInt(hex.substring(3, 5), 16);
+	let b = parseInt(hex.substring(5, 7), 16);
+	let a = slider.value; //transparency
+	return `rgb(${r}, ${g}, ${b}, ${a})`;
 };
 
 /*Generate a random HSLA color and return it as a string*/
@@ -35,7 +90,7 @@ const getRandomHSLA = () => {
 	let h = Math.floor(Math.random() * 361);
 	let s = Math.floor(Math.random() * 20) + 80;
 	let l = Math.floor(Math.random() * 20) + 40;
-	let a = Math.random();
+	let a = slider.value; //transparency
 	return `hsla(${h}, ${s}%, ${l}%, ${a})`;
 };
 
@@ -47,8 +102,34 @@ const getMousePos = (e) => {
 	};
 };
 
+/*Get mouse clicked position relative to the Canvas*/
+
 window.addEventListener('resize', () => {
 	canvas.width = window.innerWidth * 0.8;
-	canvas.height = window.innerHeight * 0.8;
+	canvas.height = window.innerHeight * 0.7;
+
 	rect = canvas.getBoundingClientRect();
+
+	originPosition = {
+		x: canvas.width / 2,
+		y: canvas.height / 2,
+	};
+});
+
+//BUTTONS
+
+positionBtn.addEventListener('click', () => {
+	changingPosition = true;
+});
+
+clearBtn.addEventListener('click', () => {
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+});
+
+downloadBtn.addEventListener('click', () => {
+	let link = document.createElement('a');
+	link.download = 'my-drawing.png';
+	link.href = canvas.toDataURL();
+	link.click();
+	link.delete;
 });

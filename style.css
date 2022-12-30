@@ -12,15 +12,57 @@ body {
 	justify-content: center;
 	align-items: center;
 	height: 100vh;
+	color: #fff;
+}
+
+button {
+	background-color: #000000;
+	color: #fff;
+	font-weight: bold;
+	border: 1px solid #fff;
+	padding: 0.5rem 1rem;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
+}
+
+button:hover {
+	background-color: #fff;
+	color: #000000;
 }
 
 h1 {
 	margin-bottom: 1.5rem;
-	color: #fff;
 }
 
 canvas {
 	border: 1px solid #fff;
+	border-radius: 5px;
+}
+
+label:first-child {
+	margin-right: 1rem;
+}
+
+input[type='color'],
+input[type='range'] {
+	margin-left: 1rem;
+}
+
+.inactive {
+	display: none;
+}
+
+.options_container {
+	border-radius: 5px;
+	width: 80%;
+	display: flex;
+	justify-content: space-evenly;
+	align-items: center;
+	margin-bottom: 1.5rem;
+	border: 1px solid #fff;
+	height: 50px;
+	font-weight: bold;
 }
 
 @media screen and (max-width: 570px) {
